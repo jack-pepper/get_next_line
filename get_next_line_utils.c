@@ -10,6 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "get_next_line.h"
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned char   *s_p;
+	
+	s_p = (unsigned char *)s;
+	while (n > 0)
+	{
+		*s_p = (unsigned char)c;
+		s_p++;
+		n--;
+	}
+	return (s);
+}
+
 char	*ft_strchr(const char *s, int c)
 {
 	if (c < 0 || c > 255)
@@ -27,6 +43,18 @@ char	*ft_strchr(const char *s, int c)
 		return ((char *)s);
 	}
 	return (NULL);
+}
+
+size_t	ft_strlen(const char *s)
+{
+	const char	*str;
+	
+	str = s;
+	while (*str)
+	{
+		str++;
+	}
+	return (str - s);
 }
 
 size_t  ft_strlcpy(char *dest, const char *src, size_t size)
@@ -52,6 +80,7 @@ size_t  ft_strlcpy(char *dest, const char *src, size_t size)
 	return (src_len);
 }
 
+/*
 t_list	*ft_lstnew(void *content)
 {
 	t_list  *new_node;
@@ -78,4 +107,4 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 		last_node->next = new;
 	}
 }
-
+*/
