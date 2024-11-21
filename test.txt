@@ -1,0 +1,4 @@
+Hi there!
+This text file is intended to test my get_next_line function.
+I hope THAT IT WILL WORK!
+Thanks xoxo

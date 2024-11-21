@@ -23,8 +23,9 @@
 
 /* get_next_line_c */
 char	*get_next_line(int fd);
-void	read_and_stash(int fd, char *buf, char **stash, int *found_line);
-char	*stash_manager(char *stash, char *buf, size_t b_read);
+int	read_and_stash(int fd, char *buf, char **stash);
+char	*stash_manager(char **stash, char *buf, size_t b_read);
+char	*seize_line(char *next_line, char **stash, char *cursor);
 
 /* get_next_line_utils */
 void    *ft_memset(void *s, int c, size_t n);
