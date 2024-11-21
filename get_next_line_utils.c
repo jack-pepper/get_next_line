@@ -12,18 +12,18 @@
 
 #include "get_next_line.h"
 
-void	*ft_memset(void *s, int c, size_t n)
+void    *ft_memset(void *s, int c, size_t n)
 {
-	unsigned char   *s_p;
-	
-	s_p = (unsigned char *)s;
-	while (n > 0)
-	{
-		*s_p = (unsigned char)c;
-		s_p++;
-		n--;
-	}
-	return (s);
+        unsigned char   *s_p;
+
+        s_p = (unsigned char *)s;
+        while (n > 0)
+        {
+                *s_p = (unsigned char)c;
+                s_p++;
+                n--;
+        }
+        return (s);
 }
 
 char	*ft_strchr(const char *s, int c)
@@ -58,53 +58,24 @@ size_t	ft_strlen(const char *s)
 }
 
 size_t  ft_strlcpy(char *dest, const char *src, size_t size)
-{	
-	size_t	src_len;
-        size_t	i;
-
-	src_len = ft_strlen(src);
-	if (size == 0)
-		return (src_len);
-	if (size == 1)
-	{
-		dest[0] = '\0';
-		return (src_len);
-	}
-	i = 0;
-	while ((i < size - 1) && (src[i] != '\0'))
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (src_len);
-}
-
-/*
-t_list	*ft_lstnew(void *content)
 {
-	t_list  *new_node;
+        size_t  src_len;
+        size_t  i;
 
-	new_node = (t_list *)malloc(sizeof(t_list));
-	if (new_node == NULL)
-		return (NULL);
-	new_node->content = content;
-	new_node->next = NULL;
-	return (new_node);
+        src_len = ft_strlen(src);
+        if (size == 0)
+                return (src_len);
+        if (size == 1)
+        {
+                dest[0] = '\0';
+                return (src_len);
+        }
+        i = 0;
+        while ((i < size - 1) && (src[i] != '\0'))
+        {
+                dest[i] = src[i];
+                i++;
+        }
+        dest[i] = '\0';
+        return (src_len);
 }
-
-void	ft_lstadd_back(t_list **lst, t_list *new)
-{
-	t_list  *last_node;
-	
-	if (lst == NULL || new == NULL)
-		return ;
-	if (*lst == NULL)
-		*lst = new;
-	else
-	{
-		last_node = ft_lstlast(*lst);
-		last_node->next = new;
-	}
-}
-*/
