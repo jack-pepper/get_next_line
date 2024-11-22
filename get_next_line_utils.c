@@ -12,18 +12,18 @@
 
 #include "get_next_line.h"
 
-void    *ft_memset(void *s, int c, size_t n)
+void	*ft_memset(void *s, int c, size_t n)
 {
-        unsigned char   *s_p;
+	unsigned char	*s_p;
 
-        s_p = (unsigned char *)s;
-        while (n > 0)
-        {
-                *s_p = (unsigned char)c;
-                s_p++;
-                n--;
-        }
-        return (s);
+	s_p = (unsigned char *)s;
+	while (n > 0)
+	{
+		*s_p = (unsigned char)c;
+		s_p++;
+		n--;
+	}
+	return (s);
 }
 
 char	*ft_strchr(const char *s, int c)
@@ -48,7 +48,7 @@ char	*ft_strchr(const char *s, int c)
 size_t	ft_strlen(const char *s)
 {
 	const char	*str;
-	
+
 	str = s;
 	while (*str)
 	{
@@ -57,25 +57,25 @@ size_t	ft_strlen(const char *s)
 	return (str - s);
 }
 
-size_t  ft_strlcpy(char *dest, const char *src, size_t size)
+size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 {
-        size_t  src_len;
-        size_t  i;
+	size_t	src_len;
+	size_t	i;
 
-        src_len = ft_strlen(src);
-        if (size == 0)
-                return (src_len);
-        if (size == 1)
-        {
-                dest[0] = '\0';
-                return (src_len);
-        }
-        i = 0;
-        while ((i < size - 1) && (src[i] != '\0'))
-        {
-                dest[i] = src[i];
-                i++;
-        }
-        dest[i] = '\0';
-        return (src_len);
+	src_len = ft_strlen(src);
+	if (size == 0)
+		return (src_len);
+	if (size == 1)
+	{
+		dest[0] = '\0';
+		return (src_len);
+	}
+	i = 0;
+	while ((i < size - 1) && (src[i] != '\0'))
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (src_len);
 }
