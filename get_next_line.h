@@ -23,16 +23,16 @@
 
 /* get_next_line_c */
 char	*get_next_line(int fd);
-int		read_and_stash(int fd, char *buf, char **stash);
+char	*read_and_stash(int fd, char **buf, char **stash, char **cursor);
 char	*stash_manager(char *stash, char *buf, size_t b_read);
 char	*seize_line(char **stash, char *cursor);
+char	*seize_eof(char **next_line, char **stash);
 
 /* get_next_line_utils */
-int     ft_strcmp(const char *s1, const char *s2);
-
 void	*ft_memset(void *s, int c, size_t n);
 char	*ft_strchr(const char *s, int c);
 size_t	ft_strlen(const char *s);
 size_t	ft_strlcpy(char *dest, const char *src, size_t size);
+void	clean_stash(char **stash);
 
 #endif
