@@ -17,7 +17,6 @@
 #include "get_next_line.h"
 #include <stdio.h> // DEBUG
 #include <fcntl.h>
-
 /*
 int	main(void)
 {
@@ -50,89 +49,67 @@ char	*get_next_line(int fd)
 {
 	char		*buf;
 	static char	*stash = NULL;
-	int			exit;
+	int			b_read;
 	char		*cursor;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+		if (stash)
+		{
+			free(stash);
+			stash = NULL;
+		}	
 		return (NULL);
+	}
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buf)
 		return (NULL);
-	ft_memset(buf, 0, BUFFER_SIZE + 1);
-	// If there is a stash already we look for a \n
-	
 	cursor = NULL;
 	if (stash != NULL)
 		cursor = ft_strchr(stash, '\n');
-	// As long as no \n found
 	while (cursor == NULL)
 	{
-		// We 
-		exit = read_and_stash(fd, buf, &stash);
-		// If b_read <= 0: exit the loop and seize the next_line
-		if ((exit == -1) || (exit == 0 && stash == NULL))
+		b_read = read(fd, buf, BUFFER_SIZE);
+		if (b_read == -1)
 		{
-			break ;
+			free(buf);
+			if (stash)
+			{
+				free(stash);
+				stash = NULL;
+			}
+			return (NULL);
 		}
-		// If b_read > 0: we look for \n. We continue the logic until it's find
-		else if (exit == 0)
-			cursor = ft_strchr(stash, '\n');
+		if (b_read <= 0)
+			break ;
+		buf[b_read] = '\0';
+		stash = stash_manager(stash, buf, b_read);
+		if (!stash)
+			return (NULL);
+		cursor = ft_strchr(stash, '\n');
 	}
 	free(buf);
 	return (seize_line(&stash, cursor));
 }
 
-int	read_and_stash(int fd, char *buf, char **stash)
-{
-	ssize_t	b_read;
-	char	*new_stash;
-
-	// We read the fd
-	b_read = read(fd, buf, BUFFER_SIZE);
-//	printf("b_read: %ld\n", b_read);
-	// If error or no bytes read, we return -1 to exit the loop 
-	// and returns a null line
-	if (b_read <= 0)
-		return (-1);
-	buf[b_read] = '\0';
-	if (*stash)
-		new_stash = stash_manager(stash, buf, b_read); // changed from b_rea
-	else
-	{
-		new_stash = malloc(sizeof(char) * (b_read + 1));
-		if (!new_stash)
-			return (-1);
-		ft_strlcpy(new_stash, buf, b_read + 1);
-	}
-	*stash = new_stash;
-	return (0);
-}
-
-char	*stash_manager(char **stash, char *buf, size_t b_read)
+char	*stash_manager(char *stash, char *buf, size_t b_read)
 {
 	char	*new_stash;
 	size_t		stash_len;
 
-	// We malloc a new stash of buf size
 	stash_len = 0;
-	printf("1-stash: *%s* - buf: %s\n", *stash, buf);
-	if (*stash)
-		stash_len = ft_strlen(*stash);
-	new_stash = malloc(sizeof(char) * (stash_len + b_read + 1));
-	if (new_stash == NULL)
+	if (stash)
+		stash_len = ft_strlen(stash);
+	new_stash = malloc(sizeof(char) * (stash_len + b_read + 1)); // This is not freed
+	if (!new_stash)
 		return (NULL);
-	if (*stash)
+	if (stash)
 	{
-		ft_strlcpy(new_stash, *stash, stash_len + 1);
-		//free(*stash);
-		printf("2-stash: *%s* 2-new_stash: %s\n", *stash, new_stash);
+		ft_strlcpy(new_stash, stash, stash_len + 1);
+		free(stash);
 	}
 	if (buf)
-	{
 		ft_strlcpy(new_stash + stash_len, buf, b_read + 1);
-		printf("3-stash: *%s* 3-new_stash: %s\n", *stash, new_stash);
-	}
-	printf("4-stash: *%s* 4-new_stash: %s\n", *stash, new_stash);
 	return (new_stash);
 }
 
@@ -140,51 +117,37 @@ char	*seize_line(char **stash, char *cursor)
 {
 	int		chunk_len;
 	char	*next_line;
-
-	next_line = NULL;	
-	// If the stash is not NULL
+	int	leftover;
+	
+	next_line = NULL;
 	if (*stash && **stash)
 	{
-		printf("*stash && **stash found\n");
-		// If a \n has been found we calculate the len of the chunk
-		// malloc to a next_line and copy the chunk up to the \n
 		if (cursor != NULL)
-		{	
-			printf("cursor is not null\n");
-			chunk_len = (cursor - *stash + 1);
-			printf("chunk_len: %d\n", chunk_len);
-			next_line = malloc(sizeof(char) * (chunk_len + 1));
-			if (!next_line)
-				return (NULL);
-			ft_strlcpy(next_line, *stash, chunk_len + 1);
-			next_line[chunk_len] = '\0';
-			// Here we set the new stash to the leftover
-			*stash = cursor + 1;
-			printf("*stash: *%s* - next_line: *%s*\n", *stash, next_line);
-		}
-		// In case of exit 0, if b_read <= 0, we copy what is left in stash
-		else
 		{
-			printf("cursor is null\n");
-			chunk_len = ft_strlen(*stash);
-			printf("chunk_len: %d\n", chunk_len);
+			chunk_len = (cursor - *stash + 1);
 			next_line = malloc(sizeof(char) * (chunk_len + 1));
 			if (!next_line)
 				return (NULL);
 			ft_strlcpy(next_line, *stash, chunk_len + 1);
-			next_line[chunk_len] = '\0';
-			printf("*stash: *%s* - next_line: *%s*\n", *stash, next_line);
-			free(*stash);
-			*stash = NULL;
+			leftover = ft_strlen(*stash) - chunk_len;
+			if (leftover > 0)
+				ft_strlcpy(*stash, *stash + chunk_len, leftover + 1);
+			else
+			{
+				free(*stash);
+				*stash = NULL;
+			}
 		}
-	}
-	// If the stash is NULL: we free it and returns a null next_line
-	else
-	{
-		printf("stash is null\n");
-		next_line = NULL;
-	}
+                else  // No newline found, copy everything in stash as the next line: seize_eof
+                {
+                        chunk_len = ft_strlen(*stash);
+                        next_line = malloc(sizeof(char) * (chunk_len + 1));
+                        if (!next_line)
+                                return (NULL);
+                        ft_strlcpy(next_line, *stash, chunk_len + 1);
+                        free(*stash);
+                        *stash = NULL;
+                }
+        }
 	return (next_line);
-	
-
 }

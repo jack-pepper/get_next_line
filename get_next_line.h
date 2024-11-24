@@ -24,7 +24,7 @@
 /* get_next_line_c */
 char	*get_next_line(int fd);
 int		read_and_stash(int fd, char *buf, char **stash);
-char	*stash_manager(char **stash, char *buf, size_t b_read);
+char	*stash_manager(char *stash, char *buf, size_t b_read);
 char	*seize_line(char **stash, char *cursor);
 
 /* get_next_line_utils */
