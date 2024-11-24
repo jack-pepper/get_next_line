@@ -18,7 +18,6 @@
 #include <stdio.h> // DEBUG
 #include <fcntl.h>
 
-/*
 int	main(void)
 {
 	char	*next_line;
@@ -45,7 +44,7 @@ int	main(void)
 	}
 	return (0);
 }
-*/
+
 char	*get_next_line(int fd)
 {
 	char		*buf;
@@ -71,9 +70,7 @@ char	*get_next_line(int fd)
 		exit = read_and_stash(fd, buf, &stash);
 		// If b_read <= 0: exit the loop and seize the next_line
 		if ((exit == -1) || (exit == 0 && stash == NULL))
-		{
 			break ;
-		}
 		// If b_read > 0: we look for \n. We continue the logic until it's find
 		else if (exit == 0)
 			cursor = ft_strchr(stash, '\n');
@@ -95,14 +92,10 @@ int	read_and_stash(int fd, char *buf, char **stash)
 	if (b_read <= 0)
 		return (-1);
 	buf[b_read] = '\0';
-	if (*stash)
-		new_stash = stash_manager(stash, buf, b_read); // changed from b_rea
-	else
+	new_stash = stash_manager(stash, buf, b_read); // changed from b_read + 1
+	if (!new_stash)
 	{
-		new_stash = malloc(sizeof(char) * (b_read + 1));
-		if (!new_stash)
-			return (-1);
-		ft_strlcpy(new_stash, buf, b_read + 1);
+		return (-1);
 	}
 	*stash = new_stash;
 	return (0);
@@ -115,24 +108,21 @@ char	*stash_manager(char **stash, char *buf, size_t b_read)
 
 	// We malloc a new stash of buf size
 	stash_len = 0;
-	printf("1-stash: *%s* - buf: %s\n", *stash, buf);
 	if (*stash)
 		stash_len = ft_strlen(*stash);
 	new_stash = malloc(sizeof(char) * (stash_len + b_read + 1));
 	if (new_stash == NULL)
 		return (NULL);
+	ft_memset(new_stash, 0, stash_len + b_read + 1);
 	if (*stash)
 	{
-		ft_strlcpy(new_stash, *stash, stash_len + 1);
+		ft_strlcpy(new_stash, *stash, stash_len);
 		//free(*stash);
-		printf("2-stash: *%s* 2-new_stash: %s\n", *stash, new_stash);
 	}
 	if (buf)
 	{
-		ft_strlcpy(new_stash + stash_len, buf, b_read + 1);
-		printf("3-stash: *%s* 3-new_stash: %s\n", *stash, new_stash);
+		ft_strlcpy(new_stash + stash_len, buf, b_read);
 	}
-	printf("4-stash: *%s* 4-new_stash: %s\n", *stash, new_stash);
 	return (new_stash);
 }
 
@@ -151,7 +141,7 @@ char	*seize_line(char **stash, char *cursor)
 		if (cursor != NULL)
 		{	
 			printf("cursor is not null\n");
-			chunk_len = (cursor - *stash + 1);
+			chunk_len = (cursor - *stash);
 			printf("chunk_len: %d\n", chunk_len);
 			next_line = malloc(sizeof(char) * (chunk_len + 1));
 			if (!next_line)
@@ -181,7 +171,7 @@ char	*seize_line(char **stash, char *cursor)
 	// If the stash is NULL: we free it and returns a null next_line
 	else
 	{
-		printf("stash is null\n");
+		printf("stash is null\n", *stash);
 		next_line = NULL;
 	}
 	return (next_line);
