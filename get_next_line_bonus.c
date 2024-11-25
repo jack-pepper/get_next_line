@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 /*
 #include <stdio.h> // DEBUG!!!
 
@@ -88,7 +88,7 @@ char	*read_and_stash(int fd, char **buf, char **stash, char **cursor)
 			break ;
 		(*buf)[b_read] = '\0';
 		*stash = stash_manager(*stash, *buf, b_read);
-		if (!*stash)
+		if (!*stash || !stash)
 			return (NULL);
 		*cursor = ft_strchr(*stash, '\n');
 	}
